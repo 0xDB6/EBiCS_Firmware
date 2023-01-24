@@ -595,6 +595,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	 HAL_IWDG_Refresh(&hiwdg);
+
+
 	 /* if(PI_flag){
 	  runPIcontrol();
 	  PI_flag=0;
@@ -945,8 +948,8 @@ int main(void)
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 	  //slow loop procedere @16Hz, for LEV standard every 4th loop run, send page,
 	  if(ui32_tim3_counter>500){
-
-		//  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+		  if(__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)) HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+		 else HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 
 
 
@@ -957,8 +960,8 @@ int main(void)
 		  MS.Temperature=25;
 #endif
 		  MS.Voltage=adcData[0];
-		  if(uint32_SPEED_counter>127999){
-			  MS.Speed =128000;
+		  if(uint32_SPEED_counter>32000){
+			  MS.Speed = 32000;
 #if (SPEEDSOURCE == EXTERNAL)
 			  uint32_SPEEDx100_cumulated=0;
 #endif
@@ -980,6 +983,7 @@ int main(void)
 
 		  if((uint16_full_rotation_counter>7999||uint16_half_rotation_counter>7999)){
 			  SystemState = Stop;
+			  //HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 			  if(READ_BIT(TIM1->BDTR, TIM_BDTR_MOE)){
 			  CLEAR_BIT(TIM1->BDTR, TIM_BDTR_MOE); //Disable PWM if motor is not turning
 			  uint32_tics_filtered=1000000;
