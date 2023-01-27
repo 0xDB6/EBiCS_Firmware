@@ -606,6 +606,7 @@ int main(void)
 	  if(ui8_UART_flag){
 #if (DISPLAY_TYPE & DISPLAY_TYPE_KINGMETER||DISPLAY_TYPE & DISPLAY_TYPE_DEBUG)
 	  //kingmeter_update();
+
 	  KingMeter_Service(&KM);
 #endif
 
@@ -1901,7 +1902,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 
 void UART_IdleItCallback(void)
 {
-
+	__HAL_UART_CLEAR_IDLEFLAG(&huart1);
 	ui8_UART_flag=1;
 
 }
