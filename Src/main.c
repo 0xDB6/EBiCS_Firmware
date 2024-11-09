@@ -2076,16 +2076,17 @@ void kingmeter_update(void)
         }
 
 
-    if(KM.Rx.PushAssist == KM_PUSHASSIST_ON)
-    {
-    	ui8_Push_Assist_flag=1;
-    }
-    else
-    {
-    	ui8_Push_Assist_flag=0;
-    }
-//    MP.speedLimit=KM.Rx.SPEEDMAX_Limit;
-//    MP.battery_current_max = KM.Rx.CUR_Limit_mA;
+		if(KM.Rx.PushAssist == KM_PUSHASSIST_ON)
+		{
+			ui8_Push_Assist_flag=1;
+		}
+		else
+		{
+			ui8_Push_Assist_flag=0;
+		}
+		i8_direction = KM.Settings.Reverse;
+		//    MP.speedLimit=KM.Rx.SPEEDMAX_Limit;
+		//    MP.battery_current_max = KM.Rx.CUR_Limit_mA;
 
 
 
