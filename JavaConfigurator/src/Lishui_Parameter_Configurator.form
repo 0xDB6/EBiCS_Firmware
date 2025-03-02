@@ -135,91 +135,86 @@
                                   <Group type="102" attributes="0">
                                       <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="RB_JLCD" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="RB_KM5S" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="RB_KUNTENG" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="RB_BAFANG_LCD" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="RB_BAFANG_TFT" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="RB_EBICS" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="Label_Parameter1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="RB_DEBUG" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace pref="25" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="jLabel28" min="-2" max="-2" attributes="0"/>
                                           <Group type="102" attributes="0">
-                                              <Component id="RB_DEBUG" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace max="32767" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="1" attributes="0">
                                               <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Group type="102" attributes="0">
-                                                      <Group type="103" groupAlignment="0" attributes="0">
-                                                          <Component id="RB_JLCD" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="RB_KM5S" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="RB_KUNTENG" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="RB_BAFANG" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="RB_EBICS" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="Label_Parameter1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="jLabel30" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="jLabel29" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="TF_PAS_TIMEOUT" min="-2" pref="64" max="-2" attributes="0"/>
+                                                  <Component id="TF_PAS_RAMP_END" alignment="0" min="-2" pref="64" max="-2" attributes="0"/>
+                                              </Group>
+                                          </Group>
+                                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="jLabel60" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                                  <Component id="TF_PAS_IMP_PER_TURN" min="-2" pref="64" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                                                      <Group type="102" alignment="0" attributes="0">
+                                                          <Component id="jLabel46" min="-2" max="-2" attributes="0"/>
+                                                          <EmptySpace max="32767" attributes="0"/>
+                                                          <Component id="TF_FRAC_LOW" min="-2" pref="49" max="-2" attributes="0"/>
                                                       </Group>
-                                                      <EmptySpace pref="202" max="32767" attributes="0"/>
-                                                      <Group type="103" groupAlignment="0" attributes="0">
-                                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                                              <Group type="102" alignment="0" attributes="0">
-                                                                  <Component id="jLabel46" min="-2" max="-2" attributes="0"/>
-                                                                  <EmptySpace max="32767" attributes="0"/>
-                                                                  <Component id="TF_FRAC_LOW" min="-2" pref="49" max="-2" attributes="0"/>
-                                                              </Group>
-                                                              <Group type="102" alignment="0" attributes="0">
-                                                                  <Component id="jLabel45" min="-2" max="-2" attributes="0"/>
-                                                                  <EmptySpace max="32767" attributes="0"/>
-                                                                  <Component id="TF_FRAC_HIGH" min="-2" pref="49" max="-2" attributes="0"/>
-                                                              </Group>
-                                                              <Component id="RB_DIRDET" min="-2" max="-2" attributes="0"/>
-                                                              <Group type="102" alignment="0" attributes="0">
-                                                                  <Group type="103" groupAlignment="0" attributes="0">
-                                                                      <Component id="jLabel30" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                                      <Component id="jLabel29" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                                  </Group>
-                                                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                                                      <Component id="TF_PAS_TIMEOUT" max="32767" attributes="0"/>
-                                                                      <Component id="TF_PAS_RAMP_END" min="-2" pref="64" max="-2" attributes="0"/>
-                                                                  </Group>
-                                                              </Group>
-                                                          </Group>
-                                                          <Component id="jLabel28" min="-2" max="-2" attributes="0"/>
+                                                      <Group type="102" alignment="0" attributes="0">
+                                                          <Component id="jLabel45" min="-2" max="-2" attributes="0"/>
+                                                          <EmptySpace max="32767" attributes="0"/>
+                                                          <Component id="TF_FRAC_HIGH" min="-2" pref="49" max="-2" attributes="0"/>
                                                       </Group>
+                                                      <Component id="RB_DIRDET" min="-2" max="-2" attributes="0"/>
                                                   </Group>
                                                   <Group type="102" alignment="1" attributes="0">
-                                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                                          <Group type="102" alignment="1" attributes="0">
-                                                              <Component id="jLabel47" min="-2" max="-2" attributes="0"/>
-                                                              <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
-                                                              <Component id="TF_Voltage_MIN" min="-2" pref="49" max="-2" attributes="0"/>
-                                                          </Group>
-                                                          <Group type="102" alignment="1" attributes="0">
-                                                              <Component id="jLabel52" min="-2" max="-2" attributes="0"/>
-                                                              <EmptySpace max="32767" attributes="0"/>
-                                                              <Component id="TF_Voltage_MAX" min="-2" pref="49" max="-2" attributes="0"/>
-                                                          </Group>
-                                                      </Group>
-                                                  </Group>
-                                              </Group>
-                                              <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-                                              <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Component id="jLabel31" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="jLabel44" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="RB_REVERSE" min="-2" max="-2" attributes="0"/>
-                                                  <Group type="102" alignment="0" attributes="0">
-                                                      <Group type="103" groupAlignment="0" attributes="0">
-                                                          <Component id="jLabel32" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="jLabel33" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="jLabel49" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                      <Group type="103" groupAlignment="1" attributes="0">
+                                                          <Component id="jLabel52" min="-2" pref="103" max="-2" attributes="0"/>
+                                                          <Component id="jLabel47" min="-2" pref="103" max="-2" attributes="0"/>
                                                       </Group>
                                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                                       <Group type="103" groupAlignment="0" attributes="0">
-                                                          <Component id="TF_PUSH_ASSIST" min="-2" pref="57" max="-2" attributes="0"/>
-                                                          <Component id="TF_THROTTLE_OFFSET" min="-2" pref="57" max="-2" attributes="0"/>
-                                                          <Component id="TF_THROTTLE_MAX" min="-2" pref="57" max="-2" attributes="0"/>
+                                                          <Component id="TF_Voltage_MIN" alignment="1" min="-2" pref="49" max="-2" attributes="0"/>
+                                                          <Component id="TF_Voltage_MAX" alignment="1" min="-2" pref="49" max="-2" attributes="0"/>
                                                       </Group>
                                                   </Group>
-                                                  <Component id="RB_THR_OVERRIDE" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="RB_IND_PROFILE" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="RB_LIMIT_THR" alignment="0" min="-2" max="-2" attributes="0"/>
                                               </Group>
-                                              <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
+                                      <EmptySpace pref="25" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel31" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel44" min="-2" max="-2" attributes="0"/>
+                                          <Component id="RB_REVERSE" min="-2" max="-2" attributes="0"/>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="jLabel32" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="jLabel33" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="jLabel49" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="TF_PUSH_ASSIST" min="-2" pref="57" max="-2" attributes="0"/>
+                                                  <Component id="TF_THROTTLE_OFFSET" min="-2" pref="57" max="-2" attributes="0"/>
+                                                  <Component id="TF_THROTTLE_MAX" min="-2" pref="57" max="-2" attributes="0"/>
+                                              </Group>
+                                          </Group>
+                                          <Component id="RB_THR_OVERRIDE" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="RB_IND_PROFILE" min="-2" max="-2" attributes="0"/>
+                                          <Component id="RB_LIMIT_THR" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace max="-2" attributes="0"/>
@@ -309,7 +304,9 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="RB_KM5S" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="RB_BAFANG" min="-2" max="-2" attributes="0"/>
+                              <Component id="RB_BAFANG_LCD" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="RB_BAFANG_TFT" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="RB_KUNTENG" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -480,12 +477,20 @@
                 <Property name="text" type="java.lang.String" value="KM5S"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JRadioButton" name="RB_BAFANG">
+            <Component class="javax.swing.JRadioButton" name="RB_BAFANG_LCD">
               <Properties>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="BG_DISPLAYS"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Bafang"/>
+                <Property name="text" type="java.lang.String" value="Bafang LCD"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="RB_BAFANG_TFT">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="BG_DISPLAYS"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Bafang TFT"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JRadioButton" name="RB_KUNTENG">
@@ -494,6 +499,14 @@
                   <ComponentRef name="BG_DISPLAYS"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Kunteng"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="RB_NO2">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="BG_DISPLAYS"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="NO2"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JRadioButton" name="RB_DEBUG">
