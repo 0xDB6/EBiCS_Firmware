@@ -82,8 +82,8 @@
 
 //--------------------------------------------------------------------
 //Speed settings
-#define WHEEL_CIRCUMFERENCE 2200
-#define GEAR_RATIO 80 //11 for BionX IGH3
+#define WHEEL_CIRCUMFERENCE 1250
+#define GEAR_RATIO 44 // 10 poles * 4.4 mechanical ratio
 #define SPEEDLIMIT 25
 #define PULSES_PER_REVOLUTION 3
 #define SPEEDSOURCE EXTERNAL
@@ -106,7 +106,7 @@
 
 //---------------------------------------------------------------------
 //Display settings
-#define DISPLAY_TYPE DISPLAY_TYPE_KINGMETER_901U
+#define DISPLAY_TYPE DISPLAY_TYPE_EBiCS
 
 //---------------------------------------------------------------------
 //Regen settings
