@@ -106,7 +106,7 @@
 
 //---------------------------------------------------------------------
 //Display settings
-#define DISPLAY_TYPE DISPLAY_TYPE_EBiCS
+#define DISPLAY_TYPE DISPLAY_TYPE_KINGMETER
 
 //---------------------------------------------------------------------
 //Regen settings
