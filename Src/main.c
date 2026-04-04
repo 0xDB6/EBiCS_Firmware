@@ -1015,7 +1015,7 @@ if(MP.com_mode==Sensorless_openloop||MP.com_mode==Sensorless_startkick)MS.Obs_fl
 		  //print values for debugging
 
 
-		  sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d, %u, %d\r\n",
+		  sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d, %u, %d, %d, %d\r\n",
 				  adcData[1],
 				  adcData[6],
 				  MS.i_q_setpoint,
@@ -1024,7 +1024,9 @@ if(MP.com_mode==Sensorless_openloop||MP.com_mode==Sensorless_startkick)MS.Obs_fl
 				  int32_temp_current_target ,
 				  MS.i_q,
 				  uint32_SPEEDx100_cumulated>>SPEEDFILTER,
-				  MS.system_state);
+				  MS.system_state,
+				  internal_tics_to_speedx100(uint32_tics_filtered>>3), // internal speed in km/h * 100
+				  external_tics_to_speedx100(MS.Speed));              // external speed in km/h * 100
 		  // sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d\r\n",(uint16_t)adcData[0],(uint16_t)adcData[1],(uint16_t)adcData[2],(uint16_t)adcData[3],(uint16_t)(adcData[4]),(uint16_t)(adcData[5]),(uint16_t)(adcData[6])) ;
 		  // sprintf_(buffer, "%d, %d, %d, %d, %d, %d\r\n",tic_array[0],tic_array[1],tic_array[2],tic_array[3],tic_array[4],tic_array[5]) ;
 		  i=0;
