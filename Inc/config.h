@@ -45,9 +45,9 @@
 //#define INDIVIDUAL_MODES
 //#define SPEEDTHROTTLE
 #define SIXSTEPTHRESHOLD 20000
-#define SPEED_PLL 0 //1 for using PLL, 0 for angle extrapolation
-#define P_FACTOR_PLL 14
-#define I_FACTOR_PLL 14
+#define SPEED_PLL 1 //1 for using PLL, 0 for angle extrapolation
+#define P_FACTOR_PLL 8
+#define I_FACTOR_PLL 10
 
 //----------------------------------------------------------------------
 //Battery bar settings for Kunteng and Bafang Display
