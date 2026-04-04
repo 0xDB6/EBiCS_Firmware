@@ -85,7 +85,7 @@
 #define WHEEL_CIRCUMFERENCE 1250
 #define GEAR_RATIO 44 // 10 poles * 4.4 mechanical ratio
 #define SPEEDLIMIT 25
-#define PULSES_PER_REVOLUTION 3
+#define PULSES_PER_REVOLUTION 1
 #define SPEEDSOURCE EXTERNAL
 #define SPEEDFILTER 1
 #define SPDSHFT 0
