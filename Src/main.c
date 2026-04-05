@@ -1908,22 +1908,22 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim)
 				if(ui_8_PLL_counter<12)ui_8_PLL_counter++;
 			}
 			else ui_8_PLL_counter=0;
-			q31_angle_per_tic = speed_PLL(q31_rotorposition_PLL,q31_rotorposition_hall,0);
-		}
 
 	#ifdef SPEED_PLL
-		if(ui16_erps>30){   //360 interpolation at higher erps
-			if(ui8_hall_case==32||ui8_hall_case==23){
-				q31_angle_per_tic = speed_PLL(q31_rotorposition_PLL,q31_rotorposition_hall, SPDSHFT*tics_higher_limit/(uint32_tics_filtered>>3));
-
-			}
+			// At high ERPS, only sync PLL on one specific Hall transition per
+			// electrical revolution (32/23) to avoid torque ripple from Hall
+			// placement errors. At low ERPS, sync on every Hall event.
+			// speedadapt is only nonzero when SPDSHFT != 0.
+			if(ui16_erps>30 && ui8_hall_case!=32 && ui8_hall_case!=23){
+				q31_angle_per_tic = speed_PLL(q31_rotorposition_PLL,q31_rotorposition_hall, 0);
 		}
 		else{
-
 			q31_angle_per_tic = speed_PLL(q31_rotorposition_PLL,q31_rotorposition_hall, SPDSHFT*tics_higher_limit/(uint32_tics_filtered>>3));
 		}
-
+	#else
+			q31_angle_per_tic = speed_PLL(q31_rotorposition_PLL,q31_rotorposition_hall,0);
 	#endif
+		}
 
 
 
