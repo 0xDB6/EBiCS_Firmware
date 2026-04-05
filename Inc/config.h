@@ -46,8 +46,8 @@
 //#define SPEEDTHROTTLE
 #define SIXSTEPTHRESHOLD 20000
 #define SPEED_PLL 1 //1 for using PLL, 0 for angle extrapolation
-#define P_FACTOR_PLL 8
-#define I_FACTOR_PLL 10
+#define P_FACTOR_PLL 10
+#define I_FACTOR_PLL 9
 
 //----------------------------------------------------------------------
 //Battery bar settings for Kunteng and Bafang Display
@@ -82,7 +82,7 @@
 
 //--------------------------------------------------------------------
 //Speed settings
-#define WHEEL_CIRCUMFERENCE 1250
+#define WHEEL_CIRCUMFERENCE 1270
 #define GEAR_RATIO 44 // 10 poles * 4.4 mechanical ratio
 #define SPEEDLIMIT 25
 #define PULSES_PER_REVOLUTION 1
