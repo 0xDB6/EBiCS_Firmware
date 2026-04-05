@@ -46,7 +46,7 @@
 //#define SPEEDTHROTTLE
 #define SIXSTEPTHRESHOLD 20000
 #define SPEED_PLL 1 //1 for using PLL, 0 for angle extrapolation
-#define P_FACTOR_PLL 9
+#define P_FACTOR_PLL 7
 #define I_FACTOR_PLL 9
 
 //----------------------------------------------------------------------
@@ -106,7 +106,7 @@
 
 //---------------------------------------------------------------------
 //Display settings
-#define DISPLAY_TYPE DISPLAY_TYPE_DEBUG
+#define DISPLAY_TYPE DISPLAY_TYPE_KINGMETER_901U
 
 //---------------------------------------------------------------------
 //Regen settings
