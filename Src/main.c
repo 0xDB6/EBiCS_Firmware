@@ -596,9 +596,9 @@ if(MP.com_mode==Sensorless_openloop||MP.com_mode==Sensorless_startkick)MS.Obs_fl
 #else
     printf_("Mode: PAS CADENCE ONLY (no torque sensor) \n ");
 #endif
-    printf_("PAS pin: PB%d, EXTI IRQ enabled, falling edge, pull-up \n ", 8);
+    printf_("PAS pin: PB%d, EXTI IRQ enabled, falling edge, pull-up \n ", 3);
     printf_("PAS_TIMEOUT=%d, RAMP_END=%d \n ", PAS_TIMEOUT, RAMP_END);
-    printf_("PAS pin state at boot: %d \n ", HAL_GPIO_ReadPin(PAS_EXTI8_GPIO_Port, PAS_EXTI8_Pin));
+    printf_("PAS pin state at boot: %d \n ", HAL_GPIO_ReadPin(PAS_EXTI3_GPIO_Port, PAS_EXTI3_Pin));
 #ifdef DIRDET
     printf_("Direction detection: ENABLED (FRAC_LOW=%d, FRAC_HIGH=%d) \n ", FRAC_LOW, FRAC_HIGH);
 #else
@@ -1037,7 +1037,7 @@ if(MP.com_mode==Sensorless_openloop||MP.com_mode==Sensorless_startkick)MS.Obs_fl
 				  (unsigned int)uint32_PAS,                   // filtered PAS period
 				  (unsigned int)uint32_PAS_fraction,          // PAS duty cycle (for direction detect)
 				  (unsigned int)(uint32_PAS_HIGH_accumulated>>2), // accumulated high time
-				  (int)HAL_GPIO_ReadPin(PAS_EXTI8_GPIO_Port, PAS_EXTI8_Pin), // raw PAS pin state
+				  (int)HAL_GPIO_ReadPin(PAS_EXTI3_GPIO_Port, PAS_EXTI3_Pin), // raw PAS pin state
 				  (int)int32_temp_current_target,             // resulting current target
 				  (int)uint16_mapped_PAS,                     // mapped PAS current
 				  (int)uint16_mapped_throttle,                // mapped throttle
@@ -1607,17 +1607,24 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(Brake_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Speed_EXTI5_Pin PAS_EXTI8_Pin */
-  GPIO_InitStruct.Pin = Speed_EXTI5_Pin|PAS_EXTI8_Pin;
+  /*Configure GPIO pin : Speed_EXTI5_Pin */
+  GPIO_InitStruct.Pin = Speed_EXTI5_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-
+  /*Configure GPIO pin : PAS_EXTI3_Pin (PB3) */
+  GPIO_InitStruct.Pin = PAS_EXTI3_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 2, 0);//for PAS and Speed interrupt
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 2, 0);//for Speed interrupt
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI3_IRQn, 2, 0);//for PAS interrupt
+  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 
 }
 
@@ -1954,7 +1961,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 
 	//PAS processing
-	if(GPIO_Pin == PAS_EXTI8_Pin)
+	if(GPIO_Pin == PAS_EXTI3_Pin)
 	{
 		ui8_PAS_flag = 1;
 		ui32_PAS_IRQ_counter++;  // count every PAS interrupt for debug
