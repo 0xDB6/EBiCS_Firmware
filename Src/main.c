@@ -137,6 +137,8 @@ volatile uint8_t ui8_UART_flag=0;
 volatile uint8_t ui8_Push_Assist_flag=0;
 volatile uint8_t ui8_UART_TxCplt_flag=1;
 volatile uint8_t ui8_PAS_flag=0;
+volatile uint32_t ui32_PAS_IRQ_counter=0;  // counts total PAS interrupts for debugging
+uint32_t ui32_PAS_processed_counter=0;     // counts PAS events that passed debounce
 volatile uint8_t ui8_SPEED_flag=0;
 volatile uint8_t ui8_SPEED_control_flag=0;
 volatile uint8_t ui8_BC_limit_flag=0;  //flag for Battery current limitation
@@ -180,7 +182,7 @@ int16_t i16_cosinus=0;
 q31_t q31_delta_teta;
 q31_t q31_delta_teta_obs;
 
-char buffer[100];
+char buffer[200];
 char char_dyn_adc_state_old=1;
 const uint8_t assist_factor[10]={0, 51, 102, 153, 204, 255, 255, 255, 255, 255};
 const uint8_t assist_profile[2][6]= {	{0,10,20,30,45,48},
@@ -589,6 +591,19 @@ if(MP.com_mode==Sensorless_openloop||MP.com_mode==Sensorless_startkick)MS.Obs_fl
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_DEBUG)
     printf_("Lishui FOC v1.0 \n ");
+#ifdef TS_MODE
+    printf_("Mode: TORQUE SENSOR \n ");
+#else
+    printf_("Mode: PAS CADENCE ONLY (no torque sensor) \n ");
+#endif
+    printf_("PAS pin: PB%d, EXTI IRQ enabled, falling edge, pull-up \n ", 8);
+    printf_("PAS_TIMEOUT=%d, RAMP_END=%d \n ", PAS_TIMEOUT, RAMP_END);
+    printf_("PAS pin state at boot: %d \n ", HAL_GPIO_ReadPin(PAS_EXTI8_GPIO_Port, PAS_EXTI8_Pin));
+#ifdef DIRDET
+    printf_("Direction detection: ENABLED (FRAC_LOW=%d, FRAC_HIGH=%d) \n ", FRAC_LOW, FRAC_HIGH);
+#else
+    printf_("Direction detection: DISABLED \n ");
+#endif
 
 #endif
 
@@ -653,6 +668,7 @@ if(MP.com_mode==Sensorless_openloop||MP.com_mode==Sensorless_startkick)MS.Obs_fl
 	  //PAS signal processing
 	  if(ui8_PAS_flag){
 		  if(uint32_PAS_counter>100){ //debounce
+		  ui32_PAS_processed_counter++;  // count debounce-passed PAS events
 		  uint32_PAS_cumulated -= uint32_PAS_cumulated>>2;
 		  uint32_PAS_cumulated += uint32_PAS_counter;
 		  uint32_PAS = uint32_PAS_cumulated>>2;
@@ -1012,23 +1028,20 @@ if(MP.com_mode==Sensorless_openloop||MP.com_mode==Sensorless_startkick)MS.Obs_fl
 		  }
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_DEBUG && !defined(FAST_LOOP_LOG))
-		  //print values for debugging
+		  //print values for debugging — verbose PAS diagnostics
 
-
-		  sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d, %u, %d, %d, %d\r\n",
-				  adcData[1],
-				  adcData[6],
-				  MS.i_q_setpoint,
-				  uint32_PAS,
-				  MS.Battery_Current,
-				  int32_temp_current_target ,
-				  MS.i_q,
-				  uint32_SPEEDx100_cumulated>>SPEEDFILTER,
-				  MS.system_state,
-				  internal_tics_to_speedx100(uint32_tics_filtered>>3), // internal speed in km/h * 100
-				  external_tics_to_speedx100(MS.Speed));              // external speed in km/h * 100
-		  // sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d\r\n",(uint16_t)adcData[0],(uint16_t)adcData[1],(uint16_t)adcData[2],(uint16_t)adcData[3],(uint16_t)(adcData[4]),(uint16_t)(adcData[5]),(uint16_t)(adcData[6])) ;
-		  // sprintf_(buffer, "%d, %d, %d, %d, %d, %d\r\n",tic_array[0],tic_array[1],tic_array[2],tic_array[3],tic_array[4],tic_array[5]) ;
+		  sprintf_(buffer, "PAS: irq=%u proc=%u cnt=%u per=%u frac=%u hi=%u pin=%d tgt=%d map=%d throt=%d st=%d\r\n",
+				  (unsigned int)ui32_PAS_IRQ_counter,       // total PAS EXTI interrupts since boot
+				  (unsigned int)ui32_PAS_processed_counter,  // PAS events that passed debounce
+				  (unsigned int)uint32_PAS_counter,           // ticks since last PAS edge (> PAS_TIMEOUT = no pedaling)
+				  (unsigned int)uint32_PAS,                   // filtered PAS period
+				  (unsigned int)uint32_PAS_fraction,          // PAS duty cycle (for direction detect)
+				  (unsigned int)(uint32_PAS_HIGH_accumulated>>2), // accumulated high time
+				  (int)HAL_GPIO_ReadPin(PAS_EXTI8_GPIO_Port, PAS_EXTI8_Pin), // raw PAS pin state
+				  (int)int32_temp_current_target,             // resulting current target
+				  (int)uint16_mapped_PAS,                     // mapped PAS current
+				  (int)uint16_mapped_throttle,                // mapped throttle
+				  (int)MS.system_state);                      // system state
 		  i=0;
 		  while (buffer[i] != '\0')
 		  {i++;}
@@ -1821,8 +1834,16 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim)
 		ui8_hall_state_old=ui8_hall_state;
 		}
 
-			uint32_tics_filtered-=uint32_tics_filtered>>3;
-			uint32_tics_filtered+=ui16_timertics;
+			// Fast-seed the filter when recovering from standstill (uint32_tics_filtered
+			// was reset to 1000000). The normal IIR filter takes ~26 Hall events to
+			// converge from the standstill value, making low-speed manual spins invisible.
+			// Seeding directly gives instant response on the first valid Hall capture.
+			if (uint32_tics_filtered > 100000 && ui16_timertics > 50 && ui16_timertics < 60000) {
+				uint32_tics_filtered = (uint32_t)ui16_timertics << 3;
+			} else {
+				uint32_tics_filtered-=uint32_tics_filtered>>3;
+				uint32_tics_filtered+=ui16_timertics;
+			}
 
 		   ui8_overflow_flag=0;
 		   ui8_SPEED_control_flag=1;
@@ -1916,10 +1937,10 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim)
 			// speedadapt is only nonzero when SPDSHFT != 0.
 			if(ui16_erps>30 && ui8_hall_case!=32 && ui8_hall_case!=23){
 				q31_angle_per_tic = speed_PLL(q31_rotorposition_PLL,q31_rotorposition_hall, 0);
-		}
-		else{
-			q31_angle_per_tic = speed_PLL(q31_rotorposition_PLL,q31_rotorposition_hall, SPDSHFT*tics_higher_limit/(uint32_tics_filtered>>3));
-		}
+			}
+			else{
+				q31_angle_per_tic = speed_PLL(q31_rotorposition_PLL,q31_rotorposition_hall, SPDSHFT*tics_higher_limit/(uint32_tics_filtered>>3));
+			}
 	#else
 			q31_angle_per_tic = speed_PLL(q31_rotorposition_PLL,q31_rotorposition_hall,0);
 	#endif
@@ -1936,6 +1957,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	if(GPIO_Pin == PAS_EXTI8_Pin)
 	{
 		ui8_PAS_flag = 1;
+		ui32_PAS_IRQ_counter++;  // count every PAS interrupt for debug
 	}
 
 	//Speed processing
