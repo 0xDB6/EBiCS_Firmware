@@ -99,6 +99,11 @@
 enum state {Stop, SixStep, Regen, Running, BatteryCurrentLimit, Interpolation, PLL, IdleRun, Sensorless, OpenLoop};
 enum com_mode {Hallsensor, Sensorless_openloop, Sensorless_startkick, Hallsensor_Sensorless};
 
+#define CONTROLLER_TEMPERATURE_THRESHOLD 70
+#define CONTROLLER_TEMPERATURE_MAX       80
+#define MOTOR_TEMPERATURE_THRESHOLD 100
+#define MOTOR_TEMPERATURE_MAX       130
+
 /* ########################## Assert Selection ############################## */
 /**
   * @brief Uncomment the line below to expanse the "assert_param" macro in the 
@@ -114,13 +119,14 @@ enum com_mode {Hallsensor, Sensorless_openloop, Sensorless_startkick, Hallsensor
 int32_t map (int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max);
 void autodetect();
 void runPIcontrol();
+void kingmeter_update(void);
+void No2_update(void);
 
 extern uint16_t switchtime[3];
 extern uint32_t ui32_tim1_counter;
 extern uint32_t uint32_PAS_counter;
 extern uint8_t throttle_is_set(void);
 extern void UART_IdleItCallback(void);
-extern void kingmeter_update(void);
 
 typedef struct
 {

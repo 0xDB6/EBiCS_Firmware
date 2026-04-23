@@ -72,6 +72,9 @@
   #include "display_ebics.h"
 #endif
 
+#if (DISPLAY_TYPE == DISPLAY_TYPE_NO2)
+#include "display_No_2.h"
+#endif
 
 #include <arm_math.h>
 /* USER CODE END Includes */
@@ -238,7 +241,10 @@ uint8_t ui8_additional_LEV_Page_counter=0;
 uint8_t ui8_LEV_Page_to_send=1;
 #endif
 
-
+//variables for display communication
+#if (DISPLAY_TYPE == DISPLAY_TYPE_NO2)
+No2_t No2;
+#endif
 
 MotorState_t MS;
 MotorParams_t MP;
@@ -471,10 +477,12 @@ if(MP.com_mode==Sensorless_openloop||MP.com_mode==Sensorless_startkick)MS.Obs_fl
      //  ebics_init();
 #endif
 
-
-    TIM1->CCR1 = 1023; //set initial PWM values
-    TIM1->CCR2 = 1023;
-    TIM1->CCR3 = 1023;
+#if (DISPLAY_TYPE == DISPLAY_TYPE_NO2)
+	No2_Init(&No2);
+#endif
+	TIM1->CCR1 = 1023; //set initial PWM values
+	TIM1->CCR2 = 1023;
+	TIM1->CCR3 = 1023;
 
 
 
@@ -644,8 +652,11 @@ if(MP.com_mode==Sensorless_openloop||MP.com_mode==Sensorless_startkick)MS.Obs_fl
 	//  process_ant_page(&MS, &MP);
 #endif
 
-	  ui8_UART_flag=0;
-	  }
+#if (DISPLAY_TYPE == DISPLAY_TYPE_NO2)
+			No2_Service(&No2);
+#endif
+			ui8_UART_flag=0;
+		}
 
 
 	  //process regualr ADC
@@ -806,9 +817,9 @@ if(MP.com_mode==Sensorless_openloop||MP.com_mode==Sensorless_startkick)MS.Obs_fl
 			  uint16_mapped_PAS = map(uint32_PAS, RAMP_END, PAS_TIMEOUT, (PH_CURRENT_MAX*(int32_t)(MS.assist_level-1))>>2, 0); // level in range 1...5
 		#endif
 
-		#if (DISPLAY_TYPE == DISPLAY_TYPE_KINGMETER_901U)
-			  uint16_mapped_PAS = map(uint32_PAS, RAMP_END, PAS_TIMEOUT, ((PH_CURRENT_MAX*(int32_t)(MS.assist_level)))>>8, 0); // level in range 0...255
-		#endif
+#if (DISPLAY_TYPE == DISPLAY_TYPE_KINGMETER_901U||DISPLAY_TYPE == DISPLAY_TYPE_NO2)
+				uint16_mapped_PAS = map(uint32_PAS, RAMP_END, PAS_TIMEOUT, ((PH_CURRENT_MAX*(int32_t)(MS.assist_level)))>>8, 0); // level in range 0...255
+#endif
 
 		#if (DISPLAY_TYPE == DISPLAY_TYPE_DEBUG)
 			 uint16_mapped_PAS = map(uint32_PAS, RAMP_END, PAS_TIMEOUT, PH_CURRENT_MAX, 0); // Full amps in debug mode
@@ -1511,10 +1522,10 @@ static void MX_USART1_UART_Init(void)
 
   huart1.Instance = USART1;
 
-#if ((DISPLAY_TYPE & DISPLAY_TYPE_KINGMETER) ||DISPLAY_TYPE==DISPLAY_TYPE_KUNTENG||DISPLAY_TYPE==DISPLAY_TYPE_EBiCS)
-  huart1.Init.BaudRate = 9600;
+#if ((DISPLAY_TYPE & DISPLAY_TYPE_KINGMETER) ||DISPLAY_TYPE==DISPLAY_TYPE_KUNTENG||DISPLAY_TYPE==DISPLAY_TYPE_EBiCS||DISPLAY_TYPE==DISPLAY_TYPE_NO2)
+		huart1.Init.BaudRate = 9600;
 #elif (DISPLAY_TYPE == DISPLAY_TYPE_BAFANG)
-  huart1.Init.BaudRate = 1200;
+		huart1.Init.BaudRate = 1200; 
 #else
   huart1.Init.BaudRate = 56000;
 #endif
@@ -2011,11 +2022,68 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle) {
 //       ebics_init();
 #endif
 
-}
+#if (DISPLAY_TYPE == DISPLAY_TYPE_NO2)
+	No2_Init(&No2);
+#endif
+	}
+
+#if (DISPLAY_TYPE == DISPLAY_TYPE_NO2)
+	void No2_update(void)
+	{
+		/* Prepare Tx parameters */
+
+#if (SPEEDSOURCE  == EXTERNAL)
+		No2.Tx.Wheeltime_ms = ((MS.Speed>>3)*PULSES_PER_REVOLUTION); //>>3 because of 8 kHz counter frequency, so 8 tics per ms
+#else
+		if(__HAL_TIM_GET_COUNTER(&htim2) < 12000)
+		{
+			No2.Tx.Wheeltime_ms = (MS.Speed*GEAR_RATIO*6)>>9; //>>9 because of 500kHZ timer2 frequency, 512 tics per ms should be OK *6 because of 6 hall interrupts per electric revolution.
+
+		}
+		else
+		{
+			No2.Tx.Wheeltime_ms = 64000;
+		}
+
+#endif
+		if(MS.Temperature>MOTOR_TEMPERATURE_MAX) No2.Tx.Error = 7;  //motor failure
+		else if(MS.int_Temperature>CONTROLLER_TEMPERATURE_MAX)No2.Tx.Error = 9; //controller failure
+		else No2.Tx.Error = 0; //no failure
 
 
+		No2.Tx.Current_x10 = (uint16_t) (MS.Battery_Current/100); //MS.Battery_Current is in mA
+		No2.Tx.BrakeActive=brake_flag;
 
-#if (DISPLAY_TYPE & DISPLAY_TYPE_KINGMETER)
+		/* Apply Rx parameters */
+
+		MS.assist_level = No2.Rx.AssistLevel;
+
+		if(!No2.Rx.Headlight)
+		{
+			HAL_GPIO_WritePin(LIGHT_GPIO_Port, LIGHT_Pin, GPIO_PIN_RESET);
+
+		}
+		else // KM_HEADLIGHT_ON, KM_HEADLIGHT_LOW, KM_HEADLIGHT_HIGH
+		{
+			HAL_GPIO_WritePin(LIGHT_GPIO_Port, LIGHT_Pin, GPIO_PIN_SET);
+
+		}
+
+
+		if(No2.Rx.PushAssist)
+		{
+			ui8_Push_Assist_flag=1;
+		}
+		else
+		{
+			ui8_Push_Assist_flag=0;
+		}
+
+	}
+
+#endif
+
+#if (DISPLAY_TYPE & DISPLAY_TYPE_KINGMETER || DISPLAY_TYPE & DISPLAY_TYPE_DEBUG)
 void kingmeter_update(void)
 {
 		/* Prepare Tx parameters */
@@ -2052,9 +2120,9 @@ void kingmeter_update(void)
 		KM.Tx.Current_x10 = (uint16_t) (MS.Battery_Current/100); //MS.Battery_Current is in mA
 
 
-		/* Receive Rx parameters/settings and send Tx parameters */
+    /* Receive Rx parameters/settings and send Tx parameters */
 #if (DISPLAY_TYPE == DISPLAY_TYPE_KINGMETER_618U)
-		KingMeter_Service(&KM);
+	  KingMeter_Service(&KM);
 #endif
 
 
@@ -2062,16 +2130,16 @@ void kingmeter_update(void)
 
 		MS.assist_level = KM.Rx.AssistLevel;
 
-		if(KM.Rx.Headlight == KM_HEADLIGHT_OFF)
-		{
-			HAL_GPIO_WritePin(LIGHT_GPIO_Port, LIGHT_Pin, GPIO_PIN_RESET);
+    if(KM.Rx.Headlight == KM_HEADLIGHT_OFF)
+        {
+        	HAL_GPIO_WritePin(LIGHT_GPIO_Port, LIGHT_Pin, GPIO_PIN_RESET);
 
-		}
-		else // KM_HEADLIGHT_ON, KM_HEADLIGHT_LOW, KM_HEADLIGHT_HIGH
-		{
-			HAL_GPIO_WritePin(LIGHT_GPIO_Port, LIGHT_Pin, GPIO_PIN_SET);
+        }
+        else // KM_HEADLIGHT_ON, KM_HEADLIGHT_LOW, KM_HEADLIGHT_HIGH
+        {
+        	HAL_GPIO_WritePin(LIGHT_GPIO_Port, LIGHT_Pin, GPIO_PIN_SET);
 
-		}
+        }
 
 
 		if(KM.Rx.PushAssist == KM_PUSHASSIST_ON)
