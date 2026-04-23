@@ -57,6 +57,12 @@ void No2_Init (No2_t* No2_ctx){
      {
  	   Error_Handler();
      }
+    // Seed the read pointer to the current DMA position so that any bytes
+    // already received during MCU startup (ADC calibration delay etc.) are
+    // discarded.  Without this the first No2_Service() call processes a
+    // misaligned buffer that can pass the XOR checksum by chance and write
+    // garbage values (e.g. PushAssist=1) into the motor control state.
+    No2_ctx->last_pointer_position = (uint8_t)(64 - DMA1_Channel5->CNDTR);
 }
 
 
@@ -73,29 +79,28 @@ void No2_Init (No2_t* No2_ctx){
 void No2_Service(No2_t* No2_ctx)
 {
 	static uint8_t  TxBuffer[14] = {0x2,0x0E,0x1,0x0,0x80,0x0,0x0,0x2C,0x0,0xF9,0x0,0x0,0xFF,0xA};
-    static uint8_t  last_pointer_position;
     static uint8_t  recent_pointer_position;
     static uint8_t  Rx_message_length;
     static uint8_t  No2_Message[32];
 
     recent_pointer_position = 64-DMA1_Channel5->CNDTR;
 
-    if(recent_pointer_position>last_pointer_position){
-    	Rx_message_length=recent_pointer_position-last_pointer_position;
-    	//printf_("groesser %d, %d, %d \n ",recent_pointer_position,last_pointer_position, Rx_message_length);
+    if(recent_pointer_position>No2_ctx->last_pointer_position){
+    	Rx_message_length=recent_pointer_position-No2_ctx->last_pointer_position;
+    	//printf_("groesser %d, %d, %d \n ",recent_pointer_position,No2_ctx->last_pointer_position, Rx_message_length);
     	//HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-    	memcpy(No2_Message,No2_ctx->RxBuff+last_pointer_position,Rx_message_length);
+    	memcpy(No2_Message,No2_ctx->RxBuff+No2_ctx->last_pointer_position,Rx_message_length);
     	//HAL_UART_Transmit(&huart3, (uint8_t *)&No2_Message, Rx_message_length,50);
 	}
     else {
-    	Rx_message_length=recent_pointer_position+64-last_pointer_position;
-     	memcpy(No2_Message,No2_ctx->RxBuff+last_pointer_position,64-last_pointer_position);
-        memcpy(No2_Message+64-last_pointer_position,No2_ctx->RxBuff,recent_pointer_position);
+    	Rx_message_length=recent_pointer_position+64-No2_ctx->last_pointer_position;
+     	memcpy(No2_Message,No2_ctx->RxBuff+No2_ctx->last_pointer_position,64-No2_ctx->last_pointer_position);
+        memcpy(No2_Message+64-No2_ctx->last_pointer_position,No2_ctx->RxBuff,recent_pointer_position);
       //  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
 
     }
-    last_pointer_position=recent_pointer_position;
+    No2_ctx->last_pointer_position=recent_pointer_position;
     //HAL_UART_Transmit(&huart3, (uint8_t *)&No2_Message, Rx_message_length,50);
 
     if(No2_Message[19]==calculate_checksum(No2_Message, 20)){
