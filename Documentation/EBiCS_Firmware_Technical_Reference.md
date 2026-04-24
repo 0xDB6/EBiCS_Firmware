@@ -490,9 +490,9 @@ The main loop computes the motor current setpoint using a priority chain:
 
 When `LEGALFLAG` is defined (default), the current target is progressively reduced as speed approaches the legal limit:
 ```c
-target = map(speed, speedLimit * 100, (speedLimit) * 100, target, 0);
+target = map(speed, speedLimit * 100, (speedLimit + 2) * 100, target, 0);
 ```
-Config: `SPEEDLIMIT = 25` km/h. The current ramps to zero over a 1 km/h window (24–25 km/h).
+Config: `SPEEDLIMIT = 25` km/h. The current ramps to zero over a 2 km/h window (25–27 km/h).
 
 When pedals are not turning, the limit drops to 5–7 km/h:
 ```c

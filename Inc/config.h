@@ -44,7 +44,7 @@
 //#define FAST_LOOP_LOG
 //#define DISABLE_DYNAMIC_ADC
 //#define INDIVIDUAL_MODES
-//#define SPEEDTHROTTLE
+#define SPEEDTHROTTLE
 #define SIXSTEPTHRESHOLD 20000
 #define SPEED_PLL 1 //1 for using PLL, 0 for angle extrapolation
 #define P_FACTOR_PLL 7
@@ -93,10 +93,10 @@
 
 //---------------------------------------------------------------------
 //power settings
-#define PH_CURRENT_MAX 1400
-#define BATTERYCURRENT_MAX 15000
+#define PH_CURRENT_MAX 1500
+#define BATTERYCURRENT_MAX 13000
 #define REVERSE 1 //1 for normal direction, -1 for reverse
-#define PUSHASSIST_CURRENT 300
+#define PUSHASSIST_CURRENT 200
 #define VOLTAGE_MIN 1320 //33V
 
 //---------------------------------------------------------------------
@@ -118,5 +118,6 @@
 
 //---------------------------------------------------------------------
 #define AUTODETECT 0
+#define LEGALFLAG
 
 #endif /* CONFIG_H_ */
