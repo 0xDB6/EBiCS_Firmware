@@ -2056,24 +2056,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle) {
 
 		/* Apply Rx parameters */
 
-		// The S866 encodes its 5-position selector as byte[4] values 0-4;
-		// display_No_2.c left-shifts by 4, giving AssistLevel = 0, 16, 32, 48, 64
-		// for: Off / ASSIST / 1-bar / 3-bar / 5-bar.
-		// Remap to deliberate fractions of PH_CURRENT_MAX (0-255 scale):
-		//   Off    (0)  ->   0  =    0 %  — no motor output
-		//   ASSIST (16) ->  40  ~   16 %  — minimal, flat-road helping hand
-		//   1 bar  (32) ->  90  ~   35 %  — comfortable city riding
-		//   3 bars (48) -> 165  ~   65 %  — strong, handles hills well
-		//   5 bars (64) -> 255  =  100 %  — full power (battery-current-limited)
-		switch(No2.Rx.AssistLevel)
-		{
-			case  0: MS.assist_level =   0; break;
-			case 16: MS.assist_level =  40; break;
-			case 32: MS.assist_level =  90; break;
-			case 48: MS.assist_level = 165; break;
-			case 64: MS.assist_level = 255; break;
-			default: MS.assist_level = 0; break; // fallback for other display variants
-		}
+		MS.assist_level = No2.Rx.AssistLevel;
 		
 		if(!No2.Rx.Headlight)
 		{
