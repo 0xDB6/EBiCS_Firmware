@@ -2070,13 +2070,19 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle) {
 		}
 
 
-		if(No2.Rx.PushAssist)
+		// The S866 power button doubles as walk-assist. While the user holds
+		// it to power on the display, PushAssist=1 is transmitted. Don't trust
+		// the PushAssist field until the display has sent at least one packet
+		// with it cleared — i.e. the power button has been released.
+		if(!No2.push_assist_armed)
 		{
-			ui8_Push_Assist_flag=1;
+			if(!No2.Rx.PushAssist)
+				No2.push_assist_armed = 1; // button released; trust field from now on
+			ui8_Push_Assist_flag = 0;
 		}
 		else
 		{
-			ui8_Push_Assist_flag=0;
+			ui8_Push_Assist_flag = No2.Rx.PushAssist;
 		}
 
 	}

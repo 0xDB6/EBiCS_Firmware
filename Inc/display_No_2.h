@@ -77,6 +77,7 @@ typedef struct
     uint8_t         RxBuff[KM_MAX_RXBUFF];
     uint8_t         RxCnt;
     uint8_t         last_pointer_position;  // DMA read pointer, seeded on init to skip startup bytes
+    uint8_t         push_assist_armed;      // 0 until first packet with PushAssist=0 is seen; guards against power-button false-trigger
     RX_PARAM_t      Rx;
     TX_PARAM_t      Tx;
 
